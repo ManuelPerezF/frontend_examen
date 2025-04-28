@@ -9,7 +9,7 @@ interface UserContextType {
 interface User {
   name: string;
 }
- // APRENDER ESTO
+
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
