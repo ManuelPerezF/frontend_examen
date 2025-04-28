@@ -12,25 +12,35 @@ export default function SignUp() {
   });
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
-    const validUsername = 'jgomez';
-    const validPassword = 'password123';
 
     if (!formData.username || !formData.password) {
       setError('All fields are required');
       return;
     }
-
-    if (formData.username === validUsername && formData.password === validPassword) {
-      setUser({
-        name: formData.username,
+    try {
+      const response = await fetch('http://localhost:7000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        throw new Error('Invalid username or password');
+      }
+
+      const data = await response.json();
+      setUser({ name: data.username });
       router.push('/welcome'); 
-    } else {
-      setError('Invalid username or password');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Something went wrong');
+      } else {
+        setError('An unexpected error occurred');
+      }
     }
   };
 
